@@ -4,7 +4,7 @@ import praw
 import requests
 import re
 import os
-
+from gfycat.client import GfycatClient
 
 reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		client_secret=config.APP_CONFIG['client_secret'],\
@@ -12,6 +12,7 @@ reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		username=config.APP_CONFIG['username'],\
 		password=config.APP_CONFIG['password'])
 
+gfycat = GfycatClient()
 
 selected = input("Enter a subreddit: ")
 
@@ -35,14 +36,17 @@ for post in subreddit.top(limit=int(howmany)):
 	if ".gifv" in file:
 		continue	
 
-	if "." not in file:
+	if "view_video.php" in file:
 		continue
-		print(url)
-		print(file)
+
+	if "." not in file:
+		
 		if "gfycat" in url:
-			file += ".mp4"
-			url = "https://giant.gfycat.com/"
+			gfy = gfycat.query_gfy(file)
+			url = gfy['gfyItem']['max5mbGif']
+			file += ".gif"
 		else:
+			continue
 			file += ".jpg"
 
 	print(file)
