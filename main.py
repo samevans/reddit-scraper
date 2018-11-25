@@ -3,6 +3,8 @@ import config
 import praw
 import requests
 import re
+import os
+
 
 reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		client_secret=config.APP_CONFIG['client_secret'],\
@@ -14,7 +16,12 @@ reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 input = input("Enter a subreddit: ")
 subreddit = reddit.subreddit(input)
 
-for post in subreddit.top(limit=1):
+directory = config.DIR+"/"+input
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
+subreddit = reddit.subreddit(input)
+for post in subreddit.top(limit=500):
 	url = post.url
 	breadcrumbs = url.split("/")
 
@@ -23,14 +30,19 @@ for post in subreddit.top(limit=1):
 
 	file = breadcrumbs[-1]
 
+	
 	if "." not in file:
-		file += ".jpg"
+		continue
+		print(url)
+		print(file)
+		if "gfycat" in url:
+			file += ".mp4"
+			url = "https://giant.gfycat.com/"
+		else:
+			file += ".jpg"
 
 	print(file)
+	r = requests.get(url)
 
-	print(url)
-	print(breadcrumbs)
-
-r = requests.get(url)
-with open(file,"wb") as f:
-	f.write(r.content)
+	with open(os.path.join(directory,file),"wb") as f:
+		f.write(r.content)
