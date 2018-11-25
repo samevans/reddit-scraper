@@ -13,15 +13,17 @@ reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		password=config.APP_CONFIG['password'])
 
 
-input = input("Enter a subreddit: ")
-subreddit = reddit.subreddit(input)
+selected = input("Enter a subreddit: ")
 
-directory = config.DIR+"/"+input
+subreddit = reddit.subreddit(selected)
+directory = config.DIR+"/"+selected
+
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-subreddit = reddit.subreddit(input)
-for post in subreddit.top(limit=500):
+howmany = input("How many do you want?: ")
+
+for post in subreddit.top(limit=int(howmany)):
 	url = post.url
 	breadcrumbs = url.split("/")
 
@@ -30,7 +32,9 @@ for post in subreddit.top(limit=500):
 
 	file = breadcrumbs[-1]
 
-	
+	if ".gifv" in file:
+		continue	
+
 	if "." not in file:
 		continue
 		print(url)
@@ -43,6 +47,11 @@ for post in subreddit.top(limit=500):
 
 	print(file)
 	r = requests.get(url)
-
+	
 	with open(os.path.join(directory,file),"wb") as f:
 		f.write(r.content)
+		size = os.path.getsize(directory+"/"+file)
+		
+		if size < 600:
+			os.remove(directory+"/"+file)
+			
