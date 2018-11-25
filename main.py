@@ -1,7 +1,8 @@
 #! usr/bin/env python3
 import config
 import praw
-
+import requests
+import re
 
 reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		client_secret=config.APP_CONFIG['client_secret'],\
@@ -10,7 +11,26 @@ reddit = praw.Reddit(client_id=config.APP_CONFIG['client_id'],\
 		password=config.APP_CONFIG['password'])
 
 
-subreddit = reddit.subreddit('hockey')
+input = input("Enter a subreddit: ")
+subreddit = reddit.subreddit(input)
 
-for submission in subreddit.top(limit=1):
-	print(submission.title,submission.id)
+for post in subreddit.top(limit=1):
+	url = post.url
+	breadcrumbs = url.split("/")
+
+	if len(breadcrumbs) == 0:
+		file = re.findall("/(.*?)", url)
+
+	file = breadcrumbs[-1]
+
+	if "." not in file:
+		file += ".jpg"
+
+	print(file)
+
+	print(url)
+	print(breadcrumbs)
+
+r = requests.get(url)
+with open(file,"wb") as f:
+	f.write(r.content)
