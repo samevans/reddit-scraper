@@ -1,3 +1,4 @@
+teest =0
 APP_CONFIG = {
 	'client_id': 'zAcNoov5iemaRQ',
 	'client_secret': 'cviruH8Ch5U97oqhCypjQeb5ZzU',
