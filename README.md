@@ -9,6 +9,19 @@ python3 main.py
 ```
 Select the subreddit and select how many.
 
+You will need to create a file called config.py that specifies the following:
+```
+APP_CONFIG = {
+    'client_id': '',
+    'client_secret': '',
+    'user_agent': '',
+    'username': '',
+    'password': ''
+}
+
+DIR = '' #The directory you want your images to be downloaded to
+```
+
 ## Dependencies
 - Python 3, I used python 3.7.1
 - Gfycat library
