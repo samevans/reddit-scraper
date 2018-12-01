@@ -9,7 +9,7 @@ python3 main.py
 ```
 Select the subreddit and select how many.
 
-###### Dependencies
+## Dependencies
 - Python 3, I used python 3.7.1
 - Gfycat library
 - Praw library
